@@ -1,7 +1,5 @@
 package com.study.entity;
 
-import com.study.dto.Data;
-
 @lombok.Data
 public class Cell {
 

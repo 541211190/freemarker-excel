@@ -1,6 +1,4 @@
-package com.study.dto;
-
-import com.study.entity.Font;
+package com.study.entity;
 
 @lombok.Data
 public class Data {
