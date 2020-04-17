@@ -6,7 +6,7 @@ import java.io.File;
 /**
  * @project cne-power-commons-util
  * @description: 操作文件和文件夹工具类
- * @author XuChao
+ * @author 大脑补丁
  * @create 2020-04-05 11:22
  */
 public class FileUtils {
@@ -16,7 +16,7 @@ public class FileUtils {
      * 
      * @param filePath
      * @return
-     * @author XuChao on 2020-04-05 11:24
+     * @author 大脑补丁 on 2020-04-05 11:24
      */
     public static File createFile(String filePath) {
         File file = new File(filePath);

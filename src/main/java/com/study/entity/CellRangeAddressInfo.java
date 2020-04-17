@@ -9,7 +9,7 @@ import java.util.List;
  * 合并单元格信息
  * @project freemarker-excel 
  * @description: TODO 
- * @author XuChao
+ * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
 @Data

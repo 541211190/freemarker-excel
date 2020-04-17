@@ -9,7 +9,7 @@ import lombok.Data;
  * 
  * @project freemarker-excel
  * @description: FreeMarker导出带图片的Excel需要的参数对象
- * @author XuChao
+ * @author 大脑补丁
  * @create 2020-04-14 14:21
  */
 @Data

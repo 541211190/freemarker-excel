@@ -61,7 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @project freemarker-excel
  * @description: freemarker工具类
- * @author XuChao
+ * @author 大脑补丁
  * @create 2020-04-14 09:43
  */
 @Slf4j
@@ -81,7 +81,7 @@ public class FreemarkerUtils {
      *            模板所在路径（不能为空，当前路径传空字符：""）
      * @param fileFullPath
      *            文件完整路径（如：usr/local/fileName.xls）
-     * @author XuChao on 2020-04-05 11:51
+     * @author 大脑补丁 on 2020-04-05 11:51
      */
     @SuppressWarnings("rawtypes")
     public static void exportToFile(Map dataMap, String templateName, String templateFilePath, String fileFullPath) {
@@ -105,7 +105,7 @@ public class FreemarkerUtils {
      *            模板所在路径（不能为空，当前路径传空字符：""）
      * @param outputStream
      *            输出流
-     * @author XuChao on 2020-04-05 11:52
+     * @author 大脑补丁 on 2020-04-05 11:52
      */
     @SuppressWarnings("rawtypes")
     public static void exportToStream(Map dataMap, String templateName, String templateFilePath,
@@ -128,7 +128,7 @@ public class FreemarkerUtils {
      * 
      * @param excelFilePath
      * @param freemakerEntity
-     * @author XuChao on 2020-04-14 15:34
+     * @author 大脑补丁 on 2020-04-14 15:34
      */
     public static void exportImageExcel(String excelFilePath, FreemakerEntity freemakerEntity) {
         File file = FileUtils.createFile(excelFilePath);
@@ -146,7 +146,7 @@ public class FreemarkerUtils {
      * 
      * @param excelFilePath
      * @param freemakerEntity
-     * @author XuChao on 2020-04-14 15:34
+     * @author 大脑补丁 on 2020-04-14 15:34
      */
     public static void exportImageExcel(HttpServletResponse response, FreemakerEntity freemakerEntity) {
         try {

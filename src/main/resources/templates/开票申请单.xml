@@ -529,7 +529,7 @@
     <Cell ss:StyleID="s20"><Data ss:Type="String">园区地址</Data></Cell>
     <Cell ss:StyleID="s36"><Data ss:Type="String">发票号码</Data></Cell>
    </Row>
-   <!--num合并行数=电站个数*5  --> 
+   <!--num合并行数=厂区个数*5  --> 
 <#assign num = bill.stationBillList?size*5>
 <#if num < 0>
  <#assign num = 0>
