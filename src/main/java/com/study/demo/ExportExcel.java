@@ -78,7 +78,7 @@ public class ExportExcel {
         stationAmountOutput.setTaxAmount(DecimalUtils.toBigDecimal(789));
         stationAmountOutput.setTaxmoney(DecimalUtils.toBigDecimal(2324));
         bill.setStationAmount(stationAmountOutput);
-        String templateName = "开票申请单.ftl";
+        String templateName = "发票.ftl";
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("bill", bill);
         //导出到项目所在目录下，export文件夹中

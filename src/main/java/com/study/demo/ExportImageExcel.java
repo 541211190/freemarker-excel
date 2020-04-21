@@ -37,12 +37,12 @@ public class ExportImageExcel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //若改变图片位置，修改后4个参数
+        // 若改变图片位置，修改后4个参数
         HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short)16, 1, (short)26, 27);
         ExcelImageLoadDTO excelImageLoadDTO = new ExcelImageLoadDTO(imagePath, 0, anchor);
         excelImageLoadDTOS.add(excelImageLoadDTO);
         FreemakerEntity freemakerEntity = new FreemakerEntity();
-        freemakerEntity.setTemplateName("开票申请单.ftl");
+        freemakerEntity.setTemplateName("发票.ftl");
         freemakerEntity.setTemplateFilePath("");
         freemakerEntity.setDataMap(getExcelData());
         freemakerEntity.setTemporaryXmlfile("export/temp/");

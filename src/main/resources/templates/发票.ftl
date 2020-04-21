@@ -494,7 +494,7 @@
    <Protection/>
   </Style>
  </Styles>
- <Worksheet ss:Name="01 开票申请单">
+ <Worksheet ss:Name="发票">
   <Table ss:ExpandedColumnCount="1000" ss:ExpandedRowCount="1000" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="47.25" ss:DefaultRowHeight="12">
    <Column ss:Index="2" ss:AutoFitWidth="0" ss:Width="122.25"/>

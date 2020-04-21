@@ -13,6 +13,7 @@ import lombok.Data;
  * @create 2020-04-14 14:21
  */
 @Data
+@SuppressWarnings("rawtypes")
 public class FreemakerEntity {
     /**
      * 加载数据
@@ -32,12 +33,12 @@ public class FreemakerEntity {
     private String fileName;
 
     /**
-     * 历史存放xml文件路径
+     * xml缓存文件路径
      */
     private String temporaryXmlfile;
 
     /**
-     * 加载图片信息
+     * 插入图片信息
      */
     List<ExcelImageLoadDTO> excelImageLoadDTOs;
 
