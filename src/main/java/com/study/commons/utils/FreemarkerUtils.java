@@ -392,14 +392,14 @@ public class FreemarkerUtils {
      */
     private static void addCellRange(HSSFSheet sheet, List<CellRangeAddressEntity> cellRangeAddresses) {
         if (!CollectionUtils.isEmpty(cellRangeAddresses)) {
-            for (CellRangeAddressEntity cellRangeAddressInfo : cellRangeAddresses) {
-                CellRangeAddress cellRangeAddress = cellRangeAddressInfo.getCellRangeAddress();
+            for (CellRangeAddressEntity cellRangeAddressEntity : cellRangeAddresses) {
+                CellRangeAddress cellRangeAddress = cellRangeAddressEntity.getCellRangeAddress();
                 sheet.addMergedRegion(cellRangeAddress);
-                if (CollectionUtils.isEmpty(cellRangeAddressInfo.getBorders())) {
+                if (CollectionUtils.isEmpty(cellRangeAddressEntity.getBorders())) {
                     continue;
                 }
-                for (int k = 0; k < cellRangeAddressInfo.getBorders().size(); k++) {
-                    Style.Border border = cellRangeAddressInfo.getBorders().get(k);
+                for (int k = 0; k < cellRangeAddressEntity.getBorders().size(); k++) {
+                    Style.Border border = cellRangeAddressEntity.getBorders().get(k);
                     if (border == null) {
                         continue;
                     }
@@ -500,7 +500,7 @@ public class FreemarkerUtils {
     private static int getCellRanges(int createRowIndex, List<CellRangeAddressEntity> cellRangeAddresses,
         int startIndex, Cell cellInfo, Style style) {
         if (cellInfo.getMergeAcross() != null || cellInfo.getMergeDown() != null) {
-            CellRangeAddress r1 = null;
+            CellRangeAddress cellRangeAddress = null;
             if (cellInfo.getMergeAcross() != null && cellInfo.getMergeDown() != null) {
                 int mergeAcross = startIndex;
                 if (cellInfo.getMergeAcross() != 0) {
@@ -512,14 +512,14 @@ public class FreemarkerUtils {
                     // 获取该单元格结束列数
                     mergeDown += cellInfo.getMergeDown();
                 }
-                r1 = new CellRangeAddress(createRowIndex, mergeDown, (short)startIndex, (short)mergeAcross);
+                cellRangeAddress = new CellRangeAddress(createRowIndex, mergeDown, (short)startIndex, (short)mergeAcross);
             } else if (cellInfo.getMergeAcross() != null && cellInfo.getMergeDown() == null) {
                 int mergeAcross = startIndex;
                 if (cellInfo.getMergeAcross() != 0) {
                     // 获取该单元格结束列数
                     mergeAcross += cellInfo.getMergeAcross();
                     // 合并单元格
-                    r1 = new CellRangeAddress(createRowIndex, createRowIndex, (short)startIndex, (short)mergeAcross);
+                    cellRangeAddress = new CellRangeAddress(createRowIndex, createRowIndex, (short)startIndex, (short)mergeAcross);
                 }
 
             } else if (cellInfo.getMergeDown() != null && cellInfo.getMergeAcross() == null) {
@@ -528,7 +528,7 @@ public class FreemarkerUtils {
                     // 获取该单元格结束列数
                     mergeDown += cellInfo.getMergeDown();
                     // 合并单元格
-                    r1 = new CellRangeAddress(createRowIndex, mergeDown, (short)startIndex, (short)startIndex);
+                    cellRangeAddress = new CellRangeAddress(createRowIndex, mergeDown, (short)startIndex, (short)startIndex);
                 }
             }
 
@@ -538,12 +538,12 @@ public class FreemarkerUtils {
                     startIndex += cellInfo.getMergeAcross();
                 }
             }
-            CellRangeAddressEntity cellRangeAddressInfo = new CellRangeAddressEntity();
-            cellRangeAddressInfo.setCellRangeAddress(r1);
+            CellRangeAddressEntity cellRangeAddressEntity = new CellRangeAddressEntity();
+            cellRangeAddressEntity.setCellRangeAddress(cellRangeAddress);
             if (style != null && style.getBorders() != null) {
-                cellRangeAddressInfo.setBorders(style.getBorders());
+                cellRangeAddressEntity.setBorders(style.getBorders());
             }
-            cellRangeAddresses.add(cellRangeAddressInfo);
+            cellRangeAddresses.add(cellRangeAddressEntity);
         }
         return startIndex;
     }
