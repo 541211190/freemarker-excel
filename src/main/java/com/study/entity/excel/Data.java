@@ -1,6 +1,10 @@
-package com.study.entity;
+package com.study.entity.excel;
 
-@lombok.Data
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Data {
 
     private String type;

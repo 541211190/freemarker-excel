@@ -1,4 +1,4 @@
-package com.study.entity;
+package com.study.entity.excel;
 
 import java.util.List;
 

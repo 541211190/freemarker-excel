@@ -38,16 +38,16 @@ public class ExportImageExcel {
             e.printStackTrace();
         }
         //若改变图片位置，修改后4个参数
-        HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short)17, 1, (short)21, 20);
+        HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short)16, 1, (short)26, 27);
         ExcelImageLoadDTO excelImageLoadDTO = new ExcelImageLoadDTO(imagePath, 0, anchor);
         excelImageLoadDTOS.add(excelImageLoadDTO);
         FreemakerEntity freemakerEntity = new FreemakerEntity();
         freemakerEntity.setTemplateName("开票申请单.ftl");
         freemakerEntity.setTemplateFilePath("");
         freemakerEntity.setDataMap(getExcelData());
-        freemakerEntity.setTemporaryXmlfile("export/temp");
+        freemakerEntity.setTemporaryXmlfile("export/temp/");
         freemakerEntity.setExcelImageLoadDTOs(excelImageLoadDTOS);
-        freemakerEntity.setFileName("导出带图片Excel.xls");
+        freemakerEntity.setFileName("导出带图片Excel缓存文件");
         // 导出到项目所在目录下，export文件夹中
         FreemarkerUtils.exportImageExcel("export/导出带图片Excel.xls", freemakerEntity);
     }

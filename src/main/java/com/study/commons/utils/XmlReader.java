@@ -11,52 +11,50 @@ import org.dom4j.Element;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.study.entity.Cell;
-import com.study.entity.Column;
-import com.study.entity.Data;
-import com.study.entity.Font;
-import com.study.entity.Row;
-import com.study.entity.Style;
-import com.study.entity.Table;
-import com.study.entity.Worksheet;
+import com.study.entity.excel.Cell;
+import com.study.entity.excel.Column;
+import com.study.entity.excel.Data;
+import com.study.entity.excel.Font;
+import com.study.entity.excel.Row;
+import com.study.entity.excel.Style;
+import com.study.entity.excel.Table;
+import com.study.entity.excel.Worksheet;
 
+/**
+ * 
+ * @project freemarker-excel
+ * @description: 读取XML文件工具
+ * @author 大脑补丁
+ * @create 2020-04-21 08:58
+ */
 public class XmlReader {
 
-    /**
-     * 获取样式
-     * 
-     * @param document:
-     * @return java.util.Map<java.lang.String,com.power.commons.freemarker.entity.Style>
-     */
+    // 获取样式
+    @SuppressWarnings("rawtypes")
     public static Map<String, Style> getStyle(Document document) {
         // 创建一个LinkedHashMap用于存放style，按照id查找
         Map<String, Style> styleMap = new LinkedHashMap<String, Style>();
         // 新建一个Style类用于存放节点数据
         Style style = null;
-
         // 获取根节点
         Element root = document.getRootElement();
         // 获取根节点下的Styles节点
         Element styles = root.element("Styles");
         // 获取Styles下的Style节点
-        List lstyle = styles.elements("Style");
-        Iterator<?> it = lstyle.iterator();
+        List styleList = styles.elements("Style");
+        Iterator<?> it = styleList.iterator();
         while (it.hasNext()) {
-            // Element e = (Element) it.next();
             // 新建一个Style类用于存放节点数据
             style = new Style();
             Element e = (Element)it.next();
             String id = e.attributeValue("ID").toString();
             // 设置style的id
             style.setId(id);
-
             if (e.attributeValue("Name") != null) {
                 String name = e.attributeValue("Name").toString();
                 // 设置style的name
                 style.setName(name);
             }
-
-            // if (id == 1) {//当id为1时，设置为另一中构造方法
             // 获取Style下的NumberFormat节点
             Element enumberFormat = e.element("NumberFormat");
             if (enumberFormat != null) {
@@ -64,12 +62,8 @@ public class XmlReader {
                 numberFormat.setFormat(enumberFormat.attributeValue("Format"));
                 style.setNumberFormat(numberFormat);
             }
-
-            // continue;
-            // }
             Style.Alignment alignment = new Style.Alignment();
             // 获取Style下的Alignment节点
-
             Element ealignment = e.element("Alignment");
             if (ealignment != null) {
                 // 设置aligment的相关属性，并且设置style的aliment属性
@@ -78,17 +72,16 @@ public class XmlReader {
                 alignment.setWrapText(ealignment.attributeValue("WrapText"));
                 style.setAlignment(alignment);
             }
-
             // 获取Style下的Borders节点
             Element Borders = e.element("Borders");
             if (Borders != null) {
                 // 获取Borders下的Border节点
                 List Border = Borders.elements("Border");
                 // 用迭代器遍历Border节点
-                Iterator<?> bdIt = Border.iterator();
+                Iterator<?> borderIterator = Border.iterator();
                 List<Style.Border> lborders = new ArrayList<Style.Border>();
-                while (bdIt.hasNext()) {
-                    Element bd = (Element)bdIt.next();
+                while (borderIterator.hasNext()) {
+                    Element bd = (Element)borderIterator.next();
                     Style.Border border = new Style.Border();
                     border.setPosition(bd.attributeValue("Position"));
                     if (bd.attribute("LineStyle") != null) {
@@ -101,12 +94,6 @@ public class XmlReader {
                 }
                 style.setBorders(lborders);
             }
-
-            // 利用List来存取borders下的多个border并放入style
-
-            // for (int i = 0; i < style.getBorders().size(); i++) {
-            // System.out.println(style.getBorders().get(i).getPosition());
-            // }
 
             // 设置font的相关属性，并且设置style的font属性
             Style.Font font = new Style.Font();
@@ -130,141 +117,19 @@ public class XmlReader {
                 interior.setPattern(einterior.attributeValue("Pattern"));
             }
             style.setInterior(interior);
-            // if (e.element("NumberFormat") != null) {
-            // 设置NumberFormat的相关属性，并且设置style的NumberFormat属性
-            // Element enumberFormat = e.element("NumberFormat");//获取Style下的Alignment节点
-            // numberFormat.setFormat(enumberFormat.attributeValue("Format"));
-            // style.setNumberFormat(numberFormat);
-            // }
             if (e.element("Protection") != null) {
                 Element protectione = e.element("Protection");
                 Style.Protection protection = new Style.Protection();
-                protection.setProtected1(protectione.attributeValue("Protected"));
+                protection.setModifier(protectione.attributeValue("Protected"));
                 style.setProtection(protection);
             }
             styleMap.put(id, style);
 
         }
-        // 获取根节点下的Names节点
-        Element Names = root.element("Names");
-        if (Names != null) {
-            // 获取根节点下的NamedRange节点
-            Element NamedRange = Names.element("NamedRange");
-            // 获取ss:Name
-            String name = NamedRange.attributeValue("Name");
-            // 获取ss:RefersTo
-            String namedRange = NamedRange.attributeValue("RefersTo");
-        }
-
         return styleMap;
     }
 
-    // public static List<Column> getColumn(Document document){
-    // Element root = document.getRootElement();
-    // //读取根节点下的Worksheet节点
-    // Element worksheet = root.element("Worksheet");
-    // String name = worksheet.attributeValue("Name");
-    // //读取Worksheet下的ss:Table节点
-    // Element table = worksheet.element("Table");
-    // //读取ss:Table下的所有ss:Column节点
-    // List column = table.elements("Column");
-    // List<Column> columns = new ArrayList<Column>();
-    // for (Iterator<?> it = column.iterator(); it.hasNext(); ) {
-    // //通过创建column来存取column里的值
-    // Column column1 = new Column();
-    // Element eColumn = (Element) it.next();
-    // double width = Double.parseDouble(eColumn.attributeValue("Width"));
-    // column1.setWidth(width);
-    // columns.add(column1);
-    // }
-    // return columns;
-    // }
-
-    // public static List<Information> getDatas(Document document){
-    // Element root = document.getRootElement();
-    // List<Element> worksheet1 = root.elements("Worksheet");
-    //
-    // return null;
-    // }
-
-    /**
-     * 获取具体数据
-     * 
-     * @param document:
-     * @return com.power.commons.file.Information
-     */
-    // public static Information getData(Document document) {
-    // Element root = document.getRootElement();
-    //// List<Element> worksheet1 = root.elements("Worksheet");
-    // //读取根节点下的Worksheet节点
-    // Element worksheet = root.element("Worksheet");
-    // //读取Worksheet下的ss:Table节点
-    // Element table = worksheet.element("Table");
-    //
-    // Information information = new Information();
-    // information.setName(worksheet.attributeValue("Name"));
-    // //读取Worksheet下的Row节点
-    // List row = table.elements("Row");
-    // List<Information.Row> lrow = new ArrayList<Information.Row>();
-    // for (Iterator<?> it = row.iterator(); it.hasNext(); ) {
-    // //设置row对象属性并存放入list，存入information
-    // Information.Row row1 = new Information.Row();
-    // Element eRow = (Element) it.next();
-    // if(eRow.attributeValue("AutoFitHeight")!=null){
-    // int autofitheight = Integer.parseInt(eRow.attributeValue("AutoFitHeight"));
-    // row1.setAutofitheight(autofitheight);
-    // }
-    // if (eRow.attributeValue("Height")!= null) {
-    // double height = Double.parseDouble(eRow.attributeValue("Height"));
-    // row1.setHeight(height);
-    // }
-    // //将一个个row对象存放入list lrow中
-    // lrow.add(row1);
-    // //list用于存放cell
-    // List<Information.Row.Cell> lcell = new ArrayList<Information.Row.Cell>();
-    // //读取Row下的Cell节点
-    // List cell = eRow.elements("Cell");
-    // for (Iterator<?> it1 = cell.iterator(); it1.hasNext(); ) {
-    // Element eCell = (Element) it1.next();
-    // //将cell节点相关数据存入row
-    // Information.Row.Cell cell1 = new Information.Row.Cell();
-    // if(eCell.attributeValue("Index")!=null){
-    // int index = Integer.parseInt(eCell.attributeValue("Index"));
-    // cell1.setIndex(index);
-    // }
-    // String styleid = eCell.attributeValue("StyleID").toString();
-    // cell1.setStyleID(styleid);
-    // if (eCell.attributeValue("MergeAcross") != null) {
-    // int mergeacross = Integer.parseInt(eCell.attributeValue("MergeAcross"));
-    // cell1.setMergeAcross(mergeacross);
-    // }
-    // if (eCell.attributeValue("MergeDown") != null) {
-    // int mergedown = Integer.parseInt(eCell.attributeValue("MergeDown"));
-    // cell1.setMergeDown(mergedown);
-    // }
-    // //将一个个cell添加入listlcell中
-    // lcell.add(cell1);
-    // if(eCell.element("Data")!=null) {
-    // //读取Cell下的Data节点
-    // Element data = eCell.element("Data");
-    // //将data节点相关数据存入cell1
-    // Information.Row.Cell.Data data1 = new Information.Row.Cell.Data();
-    // if (data.attributeValue("Ticked")!= null) {
-    // int ticked = Integer.parseInt(data.attributeValue("Ticked"));
-    // data1.setTicked(ticked);
-    // }
-    // data1.setType(data.attributeValue("Type"));
-    // data1.setDat(data.getText());
-    // cell1.setData(data1);
-    // }
-    // }
-    // row1.setCell(lcell);
-    // }
-    // //将lrow这个list存放为information的row属性中
-    // information.setRow(lrow);
-    // return information;
-    // }
-
+    @SuppressWarnings("unchecked")
     public static List<Worksheet> getWorksheet(Document document) {
         List<Worksheet> worksheets = new ArrayList<>();
         Element root = document.getRootElement();
@@ -327,6 +192,7 @@ public class XmlReader {
         return table;
     }
 
+    @SuppressWarnings("unchecked")
     private static List<Row> getRows(Element tableElement) {
         List<Element> rowElements = tableElement.elements("Row");
         if (CollectionUtils.isEmpty(rowElements)) {
@@ -351,6 +217,7 @@ public class XmlReader {
         return rows;
     }
 
+    @SuppressWarnings("unchecked")
     private static List<Cell> getCells(Element rowElement) {
         List<Element> cellElements = rowElement.elements("Cell");
         if (CollectionUtils.isEmpty(cellElements)) {
@@ -365,12 +232,12 @@ public class XmlReader {
             }
             String mergeAcross = cellElement.attributeValue("MergeAcross");
             if (mergeAcross != null) {
-                cell.setMergeAcross(Integer.valueOf(mergeAcross));
+                cell.setMergeAcross(Double.valueOf(mergeAcross).intValue());
             }
 
             String mergeDown = cellElement.attributeValue("MergeDown");
             if (mergeDown != null) {
-                cell.setMergeDown(Integer.valueOf(mergeDown));
+                cell.setMergeDown(Double.valueOf(mergeDown).intValue());
             }
 
             String index = cellElement.attributeValue("Index");
@@ -427,6 +294,7 @@ public class XmlReader {
         return cells;
     }
 
+    @SuppressWarnings("unchecked")
     private static List<Column> getColumns(Element tableElement, String expandedRowCount, String defaultColumnWidth) {
         List<Element> columnElements = tableElement.elements("Column");
         if (CollectionUtils.isEmpty(columnElements)) {
@@ -460,7 +328,7 @@ public class XmlReader {
             column.setIndex(indexNum);
             String autoFitWidth = columnElement.attributeValue("AutoFitWidth");
             if (autoFitWidth != null) {
-                column.setAutofitwidth(Integer.valueOf(autoFitWidth));
+                column.setAutofitwidth(Double.valueOf(autoFitWidth).intValue());
             }
             String width = columnElement.attributeValue("Width");
             if (width != null) {

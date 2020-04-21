@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,6 +18,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -40,23 +40,24 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.study.dto.ExcelImageLoadDTO;
 import com.study.dto.FreemakerEntity;
-import com.study.entity.Cell;
-import com.study.entity.CellRangeAddressInfo;
-import com.study.entity.Column;
-import com.study.entity.Row;
-import com.study.entity.Style;
-import com.study.entity.Table;
-import com.study.entity.Worksheet;
+import com.study.entity.excel.Cell;
+import com.study.entity.excel.CellRangeAddressEntity;
+import com.study.entity.excel.Column;
+import com.study.entity.excel.Row;
+import com.study.entity.excel.Style;
+import com.study.entity.excel.Table;
+import com.study.entity.excel.Worksheet;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @project freemarker-excel
@@ -64,12 +65,10 @@ import lombok.extern.slf4j.Slf4j;
  * @author 大脑补丁
  * @create 2020-04-14 09:43
  */
-@Slf4j
 public class FreemarkerUtils {
 
-    
-   
-    
+    private static final Logger log = LoggerFactory.getLogger(FreemarkerUtils.class);
+
     /**
      * 导出Excel到指定文件
      * 
@@ -86,14 +85,15 @@ public class FreemarkerUtils {
     @SuppressWarnings("rawtypes")
     public static void exportToFile(Map dataMap, String templateName, String templateFilePath, String fileFullPath) {
         try {
-            File file = FileUtils.createFile(fileFullPath);
+            File file = new File(fileFullPath);
+            FileUtils.forceMkdirParent(file);
             FileOutputStream outputStream = new FileOutputStream(file);
             exportToStream(dataMap, templateName, templateFilePath, outputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * 导出Excel到输出流
      * 
@@ -124,25 +124,30 @@ public class FreemarkerUtils {
     }
 
     /**
-     * 导出到文件中
+     * 导出到文件中（导出到硬盘）
      * 
      * @param excelFilePath
      * @param freemakerEntity
      * @author 大脑补丁 on 2020-04-14 15:34
      */
     public static void exportImageExcel(String excelFilePath, FreemakerEntity freemakerEntity) {
-        File file = FileUtils.createFile(excelFilePath);
         try {
+            File file = new File(excelFilePath);
+            FileUtils.forceMkdirParent(file);
             FileOutputStream outputStream = new FileOutputStream(file);
             createImageExcleToStream(freemakerEntity, outputStream);
-        } catch (FileNotFoundException e) {
+            // 删除xml缓存文件
+            FileUtils
+                .forceDelete(new File(freemakerEntity.getTemporaryXmlfile() + freemakerEntity.getFileName() + ".xml"));
+            log.info("导出成功,导出到目录：" + file.getCanonicalPath());
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
     /**
-     * 导出到response输出流中
+     * 导出到response输出流中(用于浏览器调用接口)
      * 
      * @param excelFilePath
      * @param freemakerEntity
@@ -157,12 +162,14 @@ public class FreemarkerUtils {
             response.setHeader("Content-Disposition", "attachment;filename=\""
                 + new String((freemakerEntity.getFileName() + ".xls").getBytes("GBK"), "ISO8859-1") + "\"");
             createImageExcleToStream(freemakerEntity, outputStream);
+            // 删除xml缓存文件
+            FileUtils
+                .forceDelete(new File(freemakerEntity.getTemporaryXmlfile() + freemakerEntity.getFileName() + ".xml"));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-   
 
     // 获取项目templates文件夹下的模板
     private static Template getTemplate(String templateName, String filePath) throws IOException {
@@ -176,25 +183,26 @@ public class FreemarkerUtils {
         return configuration.getTemplate(templateName, "UTF-8");
     }
 
-   
-
     private static void createImageExcleToStream(FreemakerEntity freemakerEntity, OutputStream outputStream) {
         Writer out = null;
         try {
             // 创建xml文件
             Template template = getTemplate(freemakerEntity.getTemplateName(), freemakerEntity.getTemplateFilePath());
-            File outFile = new File(freemakerEntity.getTemporaryXmlfile() + freemakerEntity.getFileName() + ".xml");
-            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8"));
+            File tempXMLFile = new File(freemakerEntity.getTemporaryXmlfile() + freemakerEntity.getFileName() + ".xml");
+            FileUtils.forceMkdirParent(tempXMLFile);
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempXMLFile), "UTF-8"));
             template.process(freemakerEntity.getDataMap(), out);
-            log.debug("=======》开始写入xml完成");
-            System.out.println("=======》开始写入xml完成");
+            if (log.isDebugEnabled()) {
+                log.debug("1.完成将文本数据导入到XML文件中");
+            }
             SAXReader reader = new SAXReader();
-            Document document = reader.read(outFile);
+            Document document = reader.read(tempXMLFile);
             Map<String, Style> styleMap = readXmlStyle(document);
-            log.debug("=======》读取样式：" + styleMap.toString());
+            log.debug("2.完成解析XML中样式信息");
             List<Worksheet> worksheets = readXmlWorksheet(document);
-            log.debug("=======》开始写入excel：" + worksheets.toString());
-            System.out.println("=======》开始写入excel：" + worksheets.toString());
+            if (log.isDebugEnabled()) {
+                log.debug("3.开始将XML信息写入Excel，数据为：" + worksheets.toString());
+            }
             HSSFWorkbook wb = new HSSFWorkbook();
             for (Worksheet worksheet : worksheets) {
                 HSSFSheet sheet = wb.createSheet(worksheet.getName());
@@ -208,9 +216,8 @@ public class FreemarkerUtils {
                     columnIndex = getCellWidthIndex(columnIndex, i, column.getIndex());
                     sheet.setColumnWidth(columnIndex, (int)column.getWidth() * 50);
                 }
-
                 int createRowIndex = 0;
-                List<CellRangeAddressInfo> cellRangeAddresses = new ArrayList<>();
+                List<CellRangeAddressEntity> cellRangeAddresses = new ArrayList<>();
                 for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
                     Row rowInfo = rows.get(rowIndex);
                     if (rowInfo == null) {
@@ -256,20 +263,17 @@ public class FreemarkerUtils {
                 addCellRange(sheet, cellRangeAddresses);
             }
             // 加载图片到excel
-            log.debug("=======》加载图片：" + freemakerEntity.getExcelImageLoadDTOs());
-            System.out.println("=======》加载图片：" + freemakerEntity.getExcelImageLoadDTOs());
+            log.debug("4.开始写入图片：" + freemakerEntity.getExcelImageLoadDTOs());
             if (!CollectionUtils.isEmpty(freemakerEntity.getExcelImageLoadDTOs())) {
-                loadImage2Excel(freemakerEntity.getExcelImageLoadDTOs(), wb);
+                writeImageToExcel(freemakerEntity.getExcelImageLoadDTOs(), wb);
             }
-            log.debug("=======》加载图片完成：" + freemakerEntity.getExcelImageLoadDTOs());
+            log.debug("5.完成写入图片：" + freemakerEntity.getExcelImageLoadDTOs());
             // 写入excel文件,response字符流转换成字节流，template需要字节流作为输出
             wb.write(outputStream);
             outputStream.close();
-            outFile.delete();
-            System.out.println("=======》导出成功");
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("=======》写入excel异常：" + e.getMessage());
+            log.error("导出excel异常：" + e.getMessage());
         } finally {
             try {
                 out.close();
@@ -349,7 +353,8 @@ public class FreemarkerUtils {
         }
     }
 
-    private static void loadImage2Excel(List<ExcelImageLoadDTO> excelImageLoadDTOs, HSSFWorkbook wb)
+    @SuppressWarnings("rawtypes")
+    private static void writeImageToExcel(List<ExcelImageLoadDTO> excelImageLoadDTOs, HSSFWorkbook wb)
         throws IOException {
         BufferedImage bufferImg = null;
         if (!CollectionUtils.isEmpty(excelImageLoadDTOs)) {
@@ -358,17 +363,20 @@ public class FreemarkerUtils {
                 if (sheet == null) {
                     continue;
                 }
-                // 画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
+                // 画图的顶级管理器，一个sheet只能获取一个
                 Drawing patriarch = sheet.createDrawingPatriarch();
-                // anchor主要用于设置图片的属性
+                // anchor存储图片的属性，包括在Excel中的位置、大小等信息
                 HSSFClientAnchor anchor = excelImageLoadDTO.getAnchor();
                 anchor.setAnchorType(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);
                 // 插入图片
                 String imagePath = excelImageLoadDTO.getImgPath();
+                // 将图片写入到byteArray中
                 ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
                 bufferImg = ImageIO.read(new File(imagePath));
+                // 图片扩展名
                 String imageType = imagePath.substring(imagePath.lastIndexOf(".") + 1, imagePath.length());
                 ImageIO.write(bufferImg, imageType, byteArrayOut);
+                // 通过poi将图片写入到Excel中
                 patriarch.createPicture(anchor,
                     wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_JPEG));
             }
@@ -382,9 +390,9 @@ public class FreemarkerUtils {
      * @param cellRangeAddresses:
      * @return void
      */
-    private static void addCellRange(HSSFSheet sheet, List<CellRangeAddressInfo> cellRangeAddresses) {
+    private static void addCellRange(HSSFSheet sheet, List<CellRangeAddressEntity> cellRangeAddresses) {
         if (!CollectionUtils.isEmpty(cellRangeAddresses)) {
-            for (CellRangeAddressInfo cellRangeAddressInfo : cellRangeAddresses) {
+            for (CellRangeAddressEntity cellRangeAddressInfo : cellRangeAddresses) {
                 CellRangeAddress cellRangeAddress = cellRangeAddressInfo.getCellRangeAddress();
                 sheet.addMergedRegion(cellRangeAddress);
                 if (CollectionUtils.isEmpty(cellRangeAddressInfo.getBorders())) {
@@ -489,8 +497,8 @@ public class FreemarkerUtils {
      * @param style:
      * @return int
      */
-    private static int getCellRanges(int createRowIndex, List<CellRangeAddressInfo> cellRangeAddresses, int startIndex,
-        Cell cellInfo, Style style) {
+    private static int getCellRanges(int createRowIndex, List<CellRangeAddressEntity> cellRangeAddresses,
+        int startIndex, Cell cellInfo, Style style) {
         if (cellInfo.getMergeAcross() != null || cellInfo.getMergeDown() != null) {
             CellRangeAddress r1 = null;
             if (cellInfo.getMergeAcross() != null && cellInfo.getMergeDown() != null) {
@@ -530,7 +538,7 @@ public class FreemarkerUtils {
                     startIndex += cellInfo.getMergeAcross();
                 }
             }
-            CellRangeAddressInfo cellRangeAddressInfo = new CellRangeAddressInfo();
+            CellRangeAddressEntity cellRangeAddressInfo = new CellRangeAddressEntity();
             cellRangeAddressInfo.setCellRangeAddress(r1);
             if (style != null && style.getBorders() != null) {
                 cellRangeAddressInfo.setBorders(style.getBorders());
@@ -615,7 +623,6 @@ public class FreemarkerUtils {
                     }
                     // HSSFDataFormat format = wb.createDataFormat();
                     // dataStyle.setDataFormat(format.getFormat(style.getNumberFormat().getFormat()));
-
                 }
             }
             dataStyle.setFont(font);
