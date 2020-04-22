@@ -1,6 +1,7 @@
 
 package com.study.demo;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,12 +9,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.study.commons.utils.DecimalUtils;
 import com.study.commons.utils.FreemarkerUtils;
-import com.study.dto.PeriodPowerOutput;
-import com.study.dto.SendBillOutput;
-import com.study.dto.StationAmountOutput;
-import com.study.dto.StationBillOutput;
+import com.study.dto.output.PeriodPowerOutput;
+import com.study.dto.output.SendBillOutput;
+import com.study.dto.output.StationAmountOutput;
+import com.study.dto.output.StationBillOutput;
 
 @Component
 public class ExportExcel {
@@ -58,13 +58,13 @@ public class ExportExcel {
                     default:
                         break;
                 }
-                periodPower.setPower(DecimalUtils.toBigDecimal(j + 1000));
-                periodPower.setPrice(DecimalUtils.toBigDecimal(j + 0.1));
+                periodPower.setPower(new BigDecimal(j + 1000));
+                periodPower.setPrice(new BigDecimal(j + 0.1));
                 // 若Excel公式自动计算，这几个字段不用插值
-                periodPower.setNoTaxMoney(DecimalUtils.toBigDecimal(j + 1002));
+                periodPower.setNoTaxMoney(new BigDecimal(j + 1002));
                 periodPower.setTaxRate(13);
-                periodPower.setTaxAmount(DecimalUtils.toBigDecimal(j + 1004));
-                periodPower.setTaxmoney(DecimalUtils.toBigDecimal(j + 1005));
+                periodPower.setTaxAmount(new BigDecimal(j + 1004));
+                periodPower.setTaxmoney(new BigDecimal(j + 1005));
                 periodPowerList.add(periodPower);
             }
             stationBillOutput.setPeriodPowerList(periodPowerList);
@@ -73,10 +73,10 @@ public class ExportExcel {
         }
         bill.setStationBillList(stationBillList);
         StationAmountOutput stationAmountOutput = new StationAmountOutput();
-        stationAmountOutput.setPower(DecimalUtils.toBigDecimal(123));
-        stationAmountOutput.setNoTaxMoney(DecimalUtils.toBigDecimal(456));
-        stationAmountOutput.setTaxAmount(DecimalUtils.toBigDecimal(789));
-        stationAmountOutput.setTaxmoney(DecimalUtils.toBigDecimal(2324));
+        stationAmountOutput.setPower(new BigDecimal(123));
+        stationAmountOutput.setNoTaxMoney(new BigDecimal(456));
+        stationAmountOutput.setTaxAmount(new BigDecimal(789));
+        stationAmountOutput.setTaxmoney(new BigDecimal(2324));
         bill.setStationAmount(stationAmountOutput);
         String templateName = "发票.ftl";
         Map<String, Object> map = new HashMap<String, Object>();

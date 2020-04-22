@@ -1,4 +1,4 @@
-package com.study.dto;
+package com.study.dto.freemarker;
 
 import java.util.List;
 import java.util.Map;

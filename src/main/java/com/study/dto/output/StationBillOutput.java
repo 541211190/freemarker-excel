@@ -1,5 +1,5 @@
 
-package com.study.dto;
+package com.study.dto.output;
 
 import java.io.Serializable;
 import java.util.List;

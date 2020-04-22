@@ -45,8 +45,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.study.dto.ExcelImageLoadDTO;
-import com.study.dto.FreemakerEntity;
+import com.study.dto.freemarker.ExcelImageLoadDTO;
+import com.study.dto.freemarker.FreemakerEntity;
 import com.study.entity.excel.Cell;
 import com.study.entity.excel.CellRangeAddressEntity;
 import com.study.entity.excel.Column;

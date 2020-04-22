@@ -1,4 +1,4 @@
-package com.study.dto;
+package com.study.dto.freemarker;
 
 import lombok.Data;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
