@@ -41,15 +41,15 @@ public class ExportImageExcel {
         HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short)16, 1, (short)26, 27);
         ExcelImageInput excelImageInput = new ExcelImageInput(imagePath, 0, anchor);
         excelImageInputs.add(excelImageInput);
-        FreemakerInput freemakerEntity = new FreemakerInput();
-        freemakerEntity.setTemplateName("发票.ftl");
-        freemakerEntity.setTemplateFilePath("");
-        freemakerEntity.setDataMap(getExcelData());
-        freemakerEntity.setTemporaryXmlfile("export/temp/");
-        freemakerEntity.setExcelImageInputs(excelImageInputs);
-        freemakerEntity.setFileName("导出带图片Excel缓存文件");
+        FreemakerInput freemakerInput = new FreemakerInput();
+        freemakerInput.setTemplateName("发票.ftl");
+        freemakerInput.setTemplateFilePath("");
+        freemakerInput.setDataMap(getExcelData());
+        freemakerInput.setTemporaryXmlfile("export/temp/");
+        freemakerInput.setExcelImageInputs(excelImageInputs);
+        freemakerInput.setFileName("导出带图片Excel缓存文件");
         // 导出到项目所在目录下，export文件夹中
-        FreemarkerUtils.exportImageExcel("export/导出带图片Excel.xls", freemakerEntity);
+        FreemarkerUtils.exportImageExcel("export/导出带图片Excel.xls", freemakerInput);
     }
 
     // 模拟Excel假数据数据
