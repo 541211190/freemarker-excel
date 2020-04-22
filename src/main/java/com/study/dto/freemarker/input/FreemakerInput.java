@@ -1,4 +1,4 @@
-package com.study.dto.freemarker;
+package com.study.dto.freemarker.input;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Data
 @SuppressWarnings("rawtypes")
-public class FreemakerEntity {
+public class FreemakerInput {
     /**
      * 加载数据
      */
@@ -40,6 +40,6 @@ public class FreemakerEntity {
     /**
      * 插入图片信息
      */
-    List<ExcelImageLoadDTO> excelImageLoadDTOs;
+    List<ExcelImageInput> excelImageInputs;
 
 }

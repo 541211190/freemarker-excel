@@ -45,8 +45,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.study.dto.freemarker.ExcelImageLoadDTO;
-import com.study.dto.freemarker.FreemakerEntity;
+import com.study.dto.freemarker.input.ExcelImageInput;
+import com.study.dto.freemarker.input.FreemakerInput;
 import com.study.entity.excel.Cell;
 import com.study.entity.excel.CellRangeAddressEntity;
 import com.study.entity.excel.Column;
@@ -130,7 +130,7 @@ public class FreemarkerUtils {
      * @param freemakerEntity
      * @author 大脑补丁 on 2020-04-14 15:34
      */
-    public static void exportImageExcel(String excelFilePath, FreemakerEntity freemakerEntity) {
+    public static void exportImageExcel(String excelFilePath, FreemakerInput freemakerEntity) {
         try {
             File file = new File(excelFilePath);
             FileUtils.forceMkdirParent(file);
@@ -153,7 +153,7 @@ public class FreemarkerUtils {
      * @param freemakerEntity
      * @author 大脑补丁 on 2020-04-14 15:34
      */
-    public static void exportImageExcel(HttpServletResponse response, FreemakerEntity freemakerEntity) {
+    public static void exportImageExcel(HttpServletResponse response, FreemakerInput freemakerEntity) {
         try {
             OutputStream outputStream = response.getOutputStream();
             // 写入excel文件
@@ -183,7 +183,7 @@ public class FreemarkerUtils {
         return configuration.getTemplate(templateName, "UTF-8");
     }
 
-    private static void createImageExcleToStream(FreemakerEntity freemakerEntity, OutputStream outputStream) {
+    private static void createImageExcleToStream(FreemakerInput freemakerEntity, OutputStream outputStream) {
         Writer out = null;
         try {
             // 创建xml文件
@@ -263,11 +263,11 @@ public class FreemarkerUtils {
                 addCellRange(sheet, cellRangeAddresses);
             }
             // 加载图片到excel
-            log.debug("4.开始写入图片：" + freemakerEntity.getExcelImageLoadDTOs());
-            if (!CollectionUtils.isEmpty(freemakerEntity.getExcelImageLoadDTOs())) {
-                writeImageToExcel(freemakerEntity.getExcelImageLoadDTOs(), wb);
+            log.debug("4.开始写入图片：" + freemakerEntity.getExcelImageInputs());
+            if (!CollectionUtils.isEmpty(freemakerEntity.getExcelImageInputs())) {
+                writeImageToExcel(freemakerEntity.getExcelImageInputs(), wb);
             }
-            log.debug("5.完成写入图片：" + freemakerEntity.getExcelImageLoadDTOs());
+            log.debug("5.完成写入图片：" + freemakerEntity.getExcelImageInputs());
             // 写入excel文件,response字符流转换成字节流，template需要字节流作为输出
             wb.write(outputStream);
             outputStream.close();
@@ -354,22 +354,22 @@ public class FreemarkerUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    private static void writeImageToExcel(List<ExcelImageLoadDTO> excelImageLoadDTOs, HSSFWorkbook wb)
+    private static void writeImageToExcel(List<ExcelImageInput> excelImageInputs, HSSFWorkbook wb)
         throws IOException {
         BufferedImage bufferImg = null;
-        if (!CollectionUtils.isEmpty(excelImageLoadDTOs)) {
-            for (ExcelImageLoadDTO excelImageLoadDTO : excelImageLoadDTOs) {
-                Sheet sheet = wb.getSheetAt(excelImageLoadDTO.getSheetIndex());
+        if (!CollectionUtils.isEmpty(excelImageInputs)) {
+            for (ExcelImageInput excelImageInput : excelImageInputs) {
+                Sheet sheet = wb.getSheetAt(excelImageInput.getSheetIndex());
                 if (sheet == null) {
                     continue;
                 }
                 // 画图的顶级管理器，一个sheet只能获取一个
                 Drawing patriarch = sheet.createDrawingPatriarch();
                 // anchor存储图片的属性，包括在Excel中的位置、大小等信息
-                HSSFClientAnchor anchor = excelImageLoadDTO.getAnchor();
+                HSSFClientAnchor anchor = excelImageInput.getAnchor();
                 anchor.setAnchorType(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);
                 // 插入图片
-                String imagePath = excelImageLoadDTO.getImgPath();
+                String imagePath = excelImageInput.getImgPath();
                 // 将图片写入到byteArray中
                 ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
                 bufferImg = ImageIO.read(new File(imagePath));
@@ -512,14 +512,16 @@ public class FreemarkerUtils {
                     // 获取该单元格结束列数
                     mergeDown += cellInfo.getMergeDown();
                 }
-                cellRangeAddress = new CellRangeAddress(createRowIndex, mergeDown, (short)startIndex, (short)mergeAcross);
+                cellRangeAddress =
+                    new CellRangeAddress(createRowIndex, mergeDown, (short)startIndex, (short)mergeAcross);
             } else if (cellInfo.getMergeAcross() != null && cellInfo.getMergeDown() == null) {
                 int mergeAcross = startIndex;
                 if (cellInfo.getMergeAcross() != 0) {
                     // 获取该单元格结束列数
                     mergeAcross += cellInfo.getMergeAcross();
                     // 合并单元格
-                    cellRangeAddress = new CellRangeAddress(createRowIndex, createRowIndex, (short)startIndex, (short)mergeAcross);
+                    cellRangeAddress =
+                        new CellRangeAddress(createRowIndex, createRowIndex, (short)startIndex, (short)mergeAcross);
                 }
 
             } else if (cellInfo.getMergeDown() != null && cellInfo.getMergeAcross() == null) {
@@ -528,7 +530,8 @@ public class FreemarkerUtils {
                     // 获取该单元格结束列数
                     mergeDown += cellInfo.getMergeDown();
                     // 合并单元格
-                    cellRangeAddress = new CellRangeAddress(createRowIndex, mergeDown, (short)startIndex, (short)startIndex);
+                    cellRangeAddress =
+                        new CellRangeAddress(createRowIndex, mergeDown, (short)startIndex, (short)startIndex);
                 }
             }
 

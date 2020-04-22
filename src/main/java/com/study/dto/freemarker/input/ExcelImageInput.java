@@ -1,12 +1,14 @@
-package com.study.dto.freemarker;
+package com.study.dto.freemarker.input;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 
 import java.io.Serializable;
 
 @Data
-public class ExcelImageLoadDTO implements Serializable {
+@AllArgsConstructor
+public class ExcelImageInput implements Serializable {
 
     /**
      * 图片地址
@@ -23,9 +25,4 @@ public class ExcelImageLoadDTO implements Serializable {
      */
     private HSSFClientAnchor anchor;
 
-    public ExcelImageLoadDTO(String imgPath, Integer sheetIndex, HSSFClientAnchor anchor) {
-        this.imgPath = imgPath;
-        this.sheetIndex = sheetIndex;
-        this.anchor = anchor;
-    }
 }

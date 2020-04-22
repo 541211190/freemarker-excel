@@ -13,8 +13,8 @@ import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.springframework.stereotype.Component;
 
 import com.study.commons.utils.FreemarkerUtils;
-import com.study.dto.freemarker.ExcelImageLoadDTO;
-import com.study.dto.freemarker.FreemakerEntity;
+import com.study.dto.freemarker.input.ExcelImageInput;
+import com.study.dto.freemarker.input.FreemakerInput;
 import com.study.dto.output.PeriodPowerOutput;
 import com.study.dto.output.SendBillOutput;
 import com.study.dto.output.StationAmountOutput;
@@ -29,7 +29,7 @@ public class ExportImageExcel {
      */
     public void export() {
         String imagePath = "";
-        List<ExcelImageLoadDTO> excelImageLoadDTOS = new ArrayList<>();
+        List<ExcelImageInput> excelImageInputs = new ArrayList<>();
         try {
             Enumeration<URL> urlEnumeration = this.getClass().getClassLoader().getResources("templates/image.png");
             URL url = urlEnumeration.nextElement();
@@ -39,14 +39,14 @@ public class ExportImageExcel {
         }
         // 若改变图片位置，修改后4个参数
         HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short)16, 1, (short)26, 27);
-        ExcelImageLoadDTO excelImageLoadDTO = new ExcelImageLoadDTO(imagePath, 0, anchor);
-        excelImageLoadDTOS.add(excelImageLoadDTO);
-        FreemakerEntity freemakerEntity = new FreemakerEntity();
+        ExcelImageInput excelImageInput = new ExcelImageInput(imagePath, 0, anchor);
+        excelImageInputs.add(excelImageInput);
+        FreemakerInput freemakerEntity = new FreemakerInput();
         freemakerEntity.setTemplateName("发票.ftl");
         freemakerEntity.setTemplateFilePath("");
         freemakerEntity.setDataMap(getExcelData());
         freemakerEntity.setTemporaryXmlfile("export/temp/");
-        freemakerEntity.setExcelImageLoadDTOs(excelImageLoadDTOS);
+        freemakerEntity.setExcelImageInputs(excelImageInputs);
         freemakerEntity.setFileName("导出带图片Excel缓存文件");
         // 导出到项目所在目录下，export文件夹中
         FreemarkerUtils.exportImageExcel("export/导出带图片Excel.xls", freemakerEntity);
