@@ -46,6 +46,7 @@ public class ExportImageExcel {
         freemakerInput.setTemplateFilePath("");
         freemakerInput.setDataMap(getExcelData());
         freemakerInput.setTemporaryXmlfile("export/temp/");
+        // 此处为空则不导出图片，该工具通用
         freemakerInput.setExcelImageInputs(excelImageInputs);
         freemakerInput.setFileName("导出带图片Excel缓存文件");
         // 导出到项目所在目录下，export文件夹中

@@ -17,4 +17,6 @@ public class Cell {
 
     private Integer index;
 
+    private Comment comment;
+
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.study.commons.utils.FreemarkerUtils;
@@ -16,6 +17,7 @@ import com.study.dto.output.StationAmountOutput;
 import com.study.dto.output.StationBillOutput;
 
 @Component
+@Slf4j
 public class ExportExcel {
 
     /**

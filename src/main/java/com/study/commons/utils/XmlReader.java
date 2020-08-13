@@ -180,7 +180,7 @@ public class XmlReader {
 
         String defaultRowHeight = tableElement.attributeValue("DefaultRowHeight");
         if (defaultRowHeight != null) {
-            table.setDefaultRowHeight(Integer.parseInt(defaultRowHeight));
+            table.setDefaultRowHeight(Double.valueOf(defaultRowHeight).intValue());
         }
         // 读取列
         List<Column> columns = getColumns(tableElement, expandedColumnCount, defaultColumnWidth);

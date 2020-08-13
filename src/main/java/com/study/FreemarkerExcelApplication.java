@@ -12,7 +12,8 @@ public class FreemarkerExcelApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(FreemarkerExcelApplication.class, args);
-        
+
+
         // 1.导出普通Excel
         ExportExcel excel = context.getBean(ExportExcel.class);
         excel.export();
