@@ -4,7 +4,7 @@ import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 import com.study.dto.freemarker.input.ExcelImageInput;
-import com.study.dto.freemarker.input.FreemakerInput;
+import com.study.dto.freemarker.input.FreemarkerInput;
 import com.study.entity.excel.Cell;
 import com.study.entity.excel.Row;
 import com.study.entity.excel.Table;
@@ -45,7 +45,7 @@ public class FreemarkerUtils {
 	private static final Logger log = LoggerFactory.getLogger(FreemarkerUtils.class);
 
 	/**
-	 * 导出Excel到指定文件
+	 * 导出Excel到指定文件中
 	 *
 	 * @param dataMap          数据源
 	 * @param templateName     模板名称（包含文件后缀名.ftl）
@@ -97,7 +97,7 @@ public class FreemarkerUtils {
 	 * @param freemakerEntity
 	 * @author 大脑补丁 on 2020-04-14 15:34
 	 */
-	public static void exportImageExcel(String excelFilePath, FreemakerInput freemakerEntity) {
+	public static void exportImageExcel(String excelFilePath, FreemarkerInput freemakerEntity) {
 		try {
 			File file = new File(excelFilePath);
 			FileUtils.forceMkdirParent(file);
@@ -120,7 +120,7 @@ public class FreemarkerUtils {
 	 * @param freemakerInput
 	 * @author 大脑补丁 on 2020-04-14 15:34
 	 */
-	public static void exportImageExcel(HttpServletResponse response, FreemakerInput freemakerInput) {
+	public static void exportImageExcel(HttpServletResponse response, FreemarkerInput freemakerInput) {
 		try {
 			OutputStream outputStream = response.getOutputStream();
 			// 写入excel文件
@@ -152,13 +152,13 @@ public class FreemarkerUtils {
 		return configuration.getTemplate(templateName, "UTF-8");
 	}
 
-	private static void createImageExcleToStream(FreemakerInput freemakerEntity, OutputStream outputStream) {
+	private static void createImageExcleToStream(FreemarkerInput freemakerEntity, OutputStream outputStream) {
 		Writer out = null;
 		try {
 			// 创建xml文件
 			Template template = getTemplate(freemakerEntity.getTemplateName(), freemakerEntity.getTemplateFilePath());
 			File tempXMLFile = new File(freemakerEntity.getTemporaryXmlfile() + freemakerEntity.getFileName() +
-                    ".xml");
+					".xml");
 			FileUtils.forceMkdirParent(tempXMLFile);
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempXMLFile), "UTF-8"));
 			template.process(freemakerEntity.getDataMap(), out);
@@ -610,7 +610,8 @@ public class FreemarkerUtils {
 	}
 
 	/**
-	 * Windows平台下，可将xml直接转化为xsl格式文件（需配合对应的dll包）。linux无法使用，因为无对应so库
+	 * Windows平台下，通过office文件另存为的方式，将xml直接转化为xsl格式文件（需配合对应的dll包）。linux无法使用，因为无对应so库
+	 *
 	 * @param xmlfile
 	 * @param xlsxfile
 	 */

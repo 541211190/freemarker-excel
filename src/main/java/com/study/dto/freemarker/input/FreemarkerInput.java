@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Data
 @SuppressWarnings("rawtypes")
-public class FreemakerInput {
+public class FreemarkerInput {
     /**
      * 加载数据
      */
