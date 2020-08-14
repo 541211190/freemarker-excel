@@ -1,10 +1,10 @@
 
 package com.study.dto.output;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import lombok.Data;
 
 /**
  * @project cne-power-operation-facade
