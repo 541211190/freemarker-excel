@@ -8,6 +8,7 @@ import com.study.dto.output.SendBillOutput;
 import com.study.dto.output.StationAmountOutput;
 import com.study.dto.output.StationBillOutput;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -18,9 +19,9 @@ import java.util.*;
 public class ExportImageExcel {
 
 	/**
-	 * 导出带有图片的Excel示例
+	 * 导出带有图片的Excel示例,2003版xsl格式
 	 */
-	public void export() {
+	public void export2003() {
 		String imagePath = "";
 		List<ExcelImageInput> excelImageInputs = new ArrayList<>();
 		try {
@@ -33,17 +34,47 @@ public class ExportImageExcel {
 		// 若改变图片位置，修改后4个参数
 		HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short) 16, 1, (short) 26, 27);
 		ExcelImageInput excelImageInput = new ExcelImageInput(imagePath, 0, anchor);
+
 		excelImageInputs.add(excelImageInput);
 		FreemarkerInput freemarkerInput = new FreemarkerInput();
 		freemarkerInput.setTemplateName("发票.ftl");
 		freemarkerInput.setTemplateFilePath("");
 		freemarkerInput.setDataMap(getExcelData());
-		freemarkerInput.setTemporaryXmlfile("export/temp/");
+		freemarkerInput.setXmlTempFile("export/temp/");
 		// 若导出不带图片的Excel，此参数为空即可
 		freemarkerInput.setExcelImageInputs(excelImageInputs);
 		freemarkerInput.setFileName("导出带图片Excel缓存文件");
 		// 导出到项目所在目录下，export文件夹中
-		FreemarkerUtils.exportImageExcel("export/导出带图片Excel.xls", freemarkerInput);
+		FreemarkerUtils.exportImageExcel("export/带图片(2003版).xls", freemarkerInput);
+	}
+
+	/**
+	 * 导出带有图片的Excel2007版，XLSX格式
+	 */
+	public void export2007() {
+		String imagePath = "";
+		List<ExcelImageInput> excelImageInputs = new ArrayList<>();
+		try {
+			Enumeration<URL> urlEnumeration = this.getClass().getClassLoader().getResources("templates/image.png");
+			URL url = urlEnumeration.nextElement();
+			imagePath = url.getPath();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// 若改变图片位置，修改后4个参数
+		XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, (short) 16, 1, (short) 26, 27);
+		ExcelImageInput excelImageInput = new ExcelImageInput(imagePath, 0, anchor);
+		excelImageInputs.add(excelImageInput);
+		FreemarkerInput freemarkerInput = new FreemarkerInput();
+		freemarkerInput.setTemplateName("发票.ftl");
+		freemarkerInput.setTemplateFilePath("");
+		freemarkerInput.setDataMap(getExcelData());
+		freemarkerInput.setXmlTempFile("export/temp/");
+		// 若导出不带图片的Excel，此参数为空即可
+		freemarkerInput.setExcelImageInputs(excelImageInputs);
+		freemarkerInput.setFileName("导出带图片Excel缓存文件");
+		// 导出到项目所在目录下，export文件夹中
+		FreemarkerUtils.exportImageExcelNew("export/带图片(2007版).xlsx", freemarkerInput);
 	}
 
 	// 模拟Excel假数据数据
