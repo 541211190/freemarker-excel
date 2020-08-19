@@ -136,7 +136,32 @@ public class FreemarkerUtils {
 	}
 
 	/**
-	 * 导出到response输出流中(用于浏览器调用接口)
+	 * 导出到response输出流中(用于浏览器调用接口,支持Excel2007版，xlsx格式)
+	 *
+	 * @param excelFilePath
+	 * @param freemakerInput
+	 * @author 大脑补丁 on 2020-04-14 15:34
+	 */
+	public static void exportImageExcelNew(HttpServletResponse response, FreemarkerInput freemakerInput) {
+		try {
+			OutputStream outputStream = response.getOutputStream();
+			// 写入excel文件
+			response.reset();
+			response.setContentType("application/msexcel;charset=UTF-8");
+			response.setHeader("Content-Disposition",
+					"attachment;filename=\"" + new String((freemakerInput.getFileName() + ".xls").getBytes("GBK"),
+							"ISO8859-1") + "\"");
+			response.setHeader("Response-Type", "Download");
+			createExcelToStream(freemakerInput, outputStream);
+			// 删除xml缓存文件
+			FileUtils.forceDelete(new File(freemakerInput.getXmlTempFile() + freemakerInput.getFileName() + ".xml"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 导出到response输出流中(用于浏览器调用接口,支持Excel2003版，xls格式)
 	 *
 	 * @param excelFilePath
 	 * @param freemakerInput
@@ -158,7 +183,6 @@ public class FreemarkerUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	// 获取项目templates文件夹下的模板
