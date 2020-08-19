@@ -1,8 +1,8 @@
 # freemarker-excel （Freemarker整合POI导出Excel工具）
-![背景图1](https://github.com/541211190/freemarker-excel/blob/master/img/Freemarker-Excel.png)
+![LOGO](https://github.com/541211190/freemarker-excel/blob/master/img/Freemarker-Excel.png)
 
 
-![背景图2](https://github.com/541211190/freemarker-excel/blob/master/Freemarker-Excel.png)
+![LOGO2](https://github.com/541211190/freemarker-excel/blob/master/Freemarker-Excel.png)
 
 ## 实现的功能
 
