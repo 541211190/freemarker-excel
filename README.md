@@ -1,9 +1,6 @@
 # freemarker-excel （Freemarker整合POI导出Excel工具）
 ![LOGO](https://github.com/541211190/freemarker-excel/blob/master/img/Freemarker-Excel.png)
 
-
-![LOGO2](https://github.com/541211190/freemarker-excel/blob/master/Freemarker-Excel.png)
-
 ## 实现的功能
 
 1.支持Freemarker导出Excel的所有功能（完美导出复杂的合并单元格、合并行和列、颜色、字体等）。
