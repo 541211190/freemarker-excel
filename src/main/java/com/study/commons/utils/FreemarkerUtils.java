@@ -52,7 +52,7 @@ public class FreemarkerUtils {
 	 * @param templateName     模板名称（包含文件后缀名.ftl）
 	 * @param templateFilePath 模板所在路径（不能为空，当前路径传空字符：""）
 	 * @param fileFullPath     文件完整路径（如：usr/local/fileName.xls）
-	 * @author 大脑补丁 on 2020-04-05 11:51
+	 * @author XuChao on 2021-04-05 11:51
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void exportToFile(Map dataMap, String templateName, String templateFilePath, String fileFullPath) {
@@ -72,8 +72,8 @@ public class FreemarkerUtils {
 	 * @param dataMap          数据源
 	 * @param templateName     模板名称（包含文件后缀名.ftl）
 	 * @param templateFilePath 模板所在路径（不能为空，当前路径传空字符：""）
-	 * @param outputStream     输出流
-	 * @author 大脑补丁 on 2020-04-05 11:52
+	 * @param o·utputStream    输出流
+	 * @author `XuChao` on 2021-04-05 11:52
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void exportToStream(Map dataMap, String templateName, String templateFilePath,
@@ -95,17 +95,17 @@ public class FreemarkerUtils {
 	 * 导出到文件中（导出到硬盘，xls格式）
 	 *
 	 * @param excelFilePath
-	 * @param freemakerEntity
-	 * @author 大脑补丁 on 2020-04-14 15:34
+	 * @param freemarkerInput
+	 * @author XuChao on 2021-04-14 15:34
 	 */
-	public static void exportImageExcel(String excelFilePath, FreemarkerInput freemakerEntity) {
+	public static void exportImageExcel(String excelFilePath, FreemarkerInput freemarkerInput) {
 		try {
 			File file = new File(excelFilePath);
 			FileUtils.forceMkdirParent(file);
 			FileOutputStream outputStream = new FileOutputStream(file);
-			createImageExcleToStream(freemakerEntity, outputStream);
+			createImageExcleToStream(freemarkerInput, outputStream);
 			// 删除xml缓存文件
-			FileUtils.forceDelete(new File(freemakerEntity.getXmlTempFile() + freemakerEntity.getFileName() + ".xml"));
+			FileUtils.forceDelete(new File(freemarkerInput.getXmlTempFile() + freemarkerInput.getFileName() + ".xml"));
 			log.info("导出成功,导出到目录：" + file.getCanonicalPath());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,17 +117,17 @@ public class FreemarkerUtils {
 	 * 导出到文件中（导出到硬盘，xlsx格式）
 	 *
 	 * @param excelFilePath
-	 * @param freemakerEntity
-	 * @author 大脑补丁 on 2020-04-14 15:34
+	 * @param freemarkerInput
+	 * @author XuChao on 2021-06-25 23:34
 	 */
-	public static void exportImageExcelNew(String excelFilePath, FreemarkerInput freemakerEntity) {
+	public static void exportImageExcelNew(String excelFilePath, FreemarkerInput freemarkerInput) {
 		try {
 			File file = new File(excelFilePath);
 			FileUtils.forceMkdirParent(file);
 			FileOutputStream outputStream = new FileOutputStream(file);
-			createExcelToStream(freemakerEntity, outputStream);
+			createExcelToStream(freemarkerInput, outputStream);
 			// 删除xml缓存文件
-			FileUtils.forceDelete(new File(freemakerEntity.getXmlTempFile() + freemakerEntity.getFileName() + ".xml"));
+			FileUtils.forceDelete(new File(freemarkerInput.getXmlTempFile() + freemarkerInput.getFileName() + ".xml"));
 			log.info("导出成功,导出到目录：" + file.getCanonicalPath());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -138,23 +138,22 @@ public class FreemarkerUtils {
 	/**
 	 * 导出到response输出流中(用于浏览器调用接口,支持Excel2007版，xlsx格式)
 	 *
-	 * @param excelFilePath
-	 * @param freemakerInput
-	 * @author 大脑补丁 on 2020-04-14 15:34
+	 * @param response
+	 * @param freemarkerInput
 	 */
-	public static void exportImageExcelNew(HttpServletResponse response, FreemarkerInput freemakerInput) {
+	public static void exportImageExcelNew(HttpServletResponse response, FreemarkerInput freemarkerInput) {
 		try {
 			OutputStream outputStream = response.getOutputStream();
 			// 写入excel文件
 			response.reset();
 			response.setContentType("application/msexcel;charset=UTF-8");
 			response.setHeader("Content-Disposition",
-					"attachment;filename=\"" + new String((freemakerInput.getFileName() + ".xls").getBytes("GBK"),
+					"attachment;filename=\"" + new String((freemarkerInput.getFileName() + ".xls").getBytes("GBK"),
 							"ISO8859-1") + "\"");
 			response.setHeader("Response-Type", "Download");
-			createExcelToStream(freemakerInput, outputStream);
+			createExcelToStream(freemarkerInput, outputStream);
 			// 删除xml缓存文件
-			FileUtils.forceDelete(new File(freemakerInput.getXmlTempFile() + freemakerInput.getFileName() + ".xml"));
+			FileUtils.forceDelete(new File(freemarkerInput.getXmlTempFile() + freemarkerInput.getFileName() + ".xml"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -163,23 +162,23 @@ public class FreemarkerUtils {
 	/**
 	 * 导出到response输出流中(用于浏览器调用接口,支持Excel2003版，xls格式)
 	 *
-	 * @param excelFilePath
-	 * @param freemakerInput
-	 * @author 大脑补丁 on 2020-04-14 15:34
+	 * @param response
+	 * @param freemarkerInput
+	 * @author XuChao on 2021-06-25 23:34
 	 */
-	public static void exportImageExcel(HttpServletResponse response, FreemarkerInput freemakerInput) {
+	public static void exportImageExcel(HttpServletResponse response, FreemarkerInput freemarkerInput) {
 		try {
 			OutputStream outputStream = response.getOutputStream();
 			// 写入excel文件
 			response.reset();
 			response.setContentType("application/msexcel;charset=UTF-8");
 			response.setHeader("Content-Disposition",
-					"attachment;filename=\"" + new String((freemakerInput.getFileName() + ".xls").getBytes("GBK"),
+					"attachment;filename=\"" + new String((freemarkerInput.getFileName() + ".xls").getBytes("GBK"),
 							"ISO8859-1") + "\"");
 			response.setHeader("Response-Type", "Download");
-			createImageExcleToStream(freemakerInput, outputStream);
+			createImageExcleToStream(freemarkerInput, outputStream);
 			// 删除xml缓存文件
-			FileUtils.forceDelete(new File(freemakerInput.getXmlTempFile() + freemakerInput.getFileName() + ".xml"));
+			FileUtils.forceDelete(new File(freemarkerInput.getXmlTempFile() + freemarkerInput.getFileName() + ".xml"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -200,18 +199,18 @@ public class FreemarkerUtils {
 	/**
 	 * 导出Excel到输出流（支持Excel2003版，xls格式）
 	 *
-	 * @param freemakerEntity
+	 * @param freemarkerInput
 	 * @param outputStream
 	 */
-	private static void createImageExcleToStream(FreemarkerInput freemakerEntity, OutputStream outputStream) {
+	private static void createImageExcleToStream(FreemarkerInput freemarkerInput, OutputStream outputStream) {
 		Writer out = null;
 		try {
 			// 创建xml文件
-			Template template = getTemplate(freemakerEntity.getTemplateName(), freemakerEntity.getTemplateFilePath());
-			File tempXMLFile = new File(freemakerEntity.getXmlTempFile() + freemakerEntity.getFileName() + ".xml");
+			Template template = getTemplate(freemarkerInput.getTemplateName(), freemarkerInput.getTemplateFilePath());
+			File tempXMLFile = new File(freemarkerInput.getXmlTempFile() + freemarkerInput.getFileName() + ".xml");
 			FileUtils.forceMkdirParent(tempXMLFile);
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempXMLFile), "UTF-8"));
-			template.process(freemakerEntity.getDataMap(), out);
+			template.process(freemarkerInput.getDataMap(), out);
 			if (log.isDebugEnabled()) {
 				log.debug("1.完成将文本数据导入到XML文件中");
 			}
@@ -291,11 +290,11 @@ public class FreemarkerUtils {
 				addCellRange(sheet, cellRangeAddresses);
 			}
 			// 加载图片到excel
-			log.debug("4.开始写入图片：" + freemakerEntity.getExcelImageInputs());
-			if (!CollectionUtils.isEmpty(freemakerEntity.getExcelImageInputs())) {
-				writeImageToExcel(freemakerEntity.getExcelImageInputs(), wb);
+			log.debug("4.开始写入图片：" + freemarkerInput.getExcelImageInputs());
+			if (!CollectionUtils.isEmpty(freemarkerInput.getExcelImageInputs())) {
+				writeImageToExcel(freemarkerInput.getExcelImageInputs(), wb);
 			}
-			log.debug("5.完成写入图片：" + freemakerEntity.getExcelImageInputs());
+			log.debug("5.完成写入图片：" + freemarkerInput.getExcelImageInputs());
 			// 写入excel文件,response字符流转换成字节流，template需要字节流作为输出
 			wb.write(outputStream);
 			outputStream.close();
@@ -314,18 +313,18 @@ public class FreemarkerUtils {
 	/**
 	 * 导出Excel到输出流（支持Excel2007版，xlsx格式）
 	 *
-	 * @param freemakerEntity
+	 * @param freemarkerInput
 	 * @param outputStream
 	 */
-	private static void createExcelToStream(FreemarkerInput freemakerEntity, OutputStream outputStream) {
+	private static void createExcelToStream(FreemarkerInput freemarkerInput, OutputStream outputStream) {
 		Writer out = null;
 		try {
 			// 创建xml文件
-			Template template = getTemplate(freemakerEntity.getTemplateName(), freemakerEntity.getTemplateFilePath());
-			File tempXMLFile = new File(freemakerEntity.getXmlTempFile() + freemakerEntity.getFileName() + ".xml");
+			Template template = getTemplate(freemarkerInput.getTemplateName(), freemarkerInput.getTemplateFilePath());
+			File tempXMLFile = new File(freemarkerInput.getXmlTempFile() + freemarkerInput.getFileName() + ".xml");
 			FileUtils.forceMkdirParent(tempXMLFile);
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempXMLFile), "UTF-8"));
-			template.process(freemakerEntity.getDataMap(), out);
+			template.process(freemarkerInput.getDataMap(), out);
 			if (log.isDebugEnabled()) {
 				log.debug("1.完成将文本数据导入到XML文件中");
 			}
@@ -405,11 +404,11 @@ public class FreemarkerUtils {
 				addCellRange(sheet, cellRangeAddresses);
 			}
 			// 加载图片到excel
-			log.debug("4.开始写入图片：" + freemakerEntity.getExcelImageInputs());
-			if (!CollectionUtils.isEmpty(freemakerEntity.getExcelImageInputs())) {
-				writeImageToExcel(freemakerEntity.getExcelImageInputs(), wb);
+			log.debug("4.开始写入图片：" + freemarkerInput.getExcelImageInputs());
+			if (!CollectionUtils.isEmpty(freemarkerInput.getExcelImageInputs())) {
+				writeImageToExcel(freemarkerInput.getExcelImageInputs(), wb);
 			}
-			log.debug("5.完成写入图片：" + freemakerEntity.getExcelImageInputs());
+			log.debug("5.完成写入图片：" + freemarkerInput.getExcelImageInputs());
 			// 写入excel文件,response字符流转换成字节流，template需要字节流作为输出
 			wb.write(outputStream);
 			outputStream.close();
@@ -930,31 +929,6 @@ public class FreemarkerUtils {
 				}
 			}
 			dataStyle.setFont(font);
-		}
-	}
-
-	/**
-	 * Windows平台下，通过office文件另存为的方式，将xml直接转化为xsl格式文件（需配合对应的dll包）。linux无法使用，因为无对应so库
-	 *
-	 * @param xmlfile
-	 * @param xlsxfile
-	 */
-	public static void xml2xlsx(String xmlfile, String xlsxfile) {
-		ActiveXComponent app = new ActiveXComponent("Excel.Application");
-		try {
-			app.setProperty("Visible", new Variant(false));
-			Dispatch excels = app.getProperty("Workbooks").toDispatch();
-			Dispatch excel = Dispatch.invoke(excels, "Open", Dispatch.Method,
-					new Object[] { xmlfile, new Variant(false), new Variant(true) }, new int[1]).toDispatch();
-
-			Dispatch.invoke(excel, "SaveAs", Dispatch.Method, new Object[] { xlsxfile, new Variant(51) }, new int[1]);
-			Variant f = new Variant(false);
-			Dispatch.call(excel, "Close", f);
-		} catch (Exception e) {
-			log.info("转为XLSX出错", e);
-			e.printStackTrace();
-		} finally {
-			app.invoke("Quit", new Variant[] {});
 		}
 	}
 
