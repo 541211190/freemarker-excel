@@ -7,12 +7,12 @@ import lombok.Setter;
 @Setter
 public class Data {
 
-    private String type;
+	private String type;
 
-    private String xmlns;
+	private String xmlns;
 
-    private Font font;
+	private Font font;
 
-    private String text;
+	private String text;
 
 }

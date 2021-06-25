@@ -7,16 +7,16 @@ import lombok.Setter;
 @Setter
 public class Cell {
 
-    private String styleID;
+	private String styleID;
 
-    private Integer mergeAcross;
+	private Integer mergeAcross;
 
-    private Integer MergeDown;
+	private Integer MergeDown;
 
-    private Data data;
+	private Data data;
 
-    private Integer index;
+	private Integer index;
 
-    private Comment comment;
+	private Comment comment;
 
 }

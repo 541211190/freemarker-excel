@@ -5,14 +5,14 @@ import lombok.Data;
 @Data
 public class Font {
 
-    private String face;
+	private String face;
 
-    private String charSet;
+	private String charSet;
 
-    private String color;
+	private String color;
 
-    private String text;
+	private String text;
 
-    private int bold;
+	private int bold;
 
 }

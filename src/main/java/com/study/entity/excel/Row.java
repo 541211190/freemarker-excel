@@ -7,10 +7,10 @@ import java.util.List;
 @Data
 public class Row {
 
-    private Integer height;
+	private Integer height;
 
-    private List<Cell> cells;
+	private List<Cell> cells;
 
-    private Integer index;
+	private Integer index;
 
 }
