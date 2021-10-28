@@ -756,9 +756,10 @@ public class FreemarkerUtils {
 
 			if (cellInfo.getMergeAcross() != null) {
 				int length = cellInfo.getMergeAcross().intValue();
-				for (int i = 0; i < length; i++) {
-					startIndex += cellInfo.getMergeAcross();
-				}
+				// 暂时注释行，否则绘制合并单元格的起始位置会出错
+				//for (int i = 0; i < length; i++) {
+				startIndex += cellInfo.getMergeAcross();
+				//}
 			}
 			CellRangeAddressEntity cellRangeAddressEntity = new CellRangeAddressEntity();
 			cellRangeAddressEntity.setCellRangeAddress(cellRangeAddress);
